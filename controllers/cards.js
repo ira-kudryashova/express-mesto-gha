@@ -25,7 +25,9 @@ const createCard = (req, res) => {
     owner,
   })
     .then((card) => {
-      res.send(card);
+      // eslint-disable-next-line max-len
+      /** При успешном создании карточки нужно возвращать 201 статус ответа, этот статус ответа означает, что сервер успешно обработал запрос и создал новый ресурс */
+      res.status(201).send(card);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
