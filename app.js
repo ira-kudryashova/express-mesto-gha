@@ -9,6 +9,7 @@ const router = require('./routes/index');
 
 /** запускаем сервер и слушаем запрос */
 app.listen(PORT, () => {
+  // eslint-disable-next-line no-console
   console.log('Сервер запущен!');
 });
 
