@@ -8,7 +8,7 @@ const helmet = require('helmet');
 const { errors } = require('celebrate');
 
 const { PORT = 3000 } = process.env;
-// const { PORT = 3000, DB_URL = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
+
 const app = express();
 const routes = require('./routes/index');
 const error = require('./middlewares/errorHandle');
@@ -16,9 +16,16 @@ const error = require('./middlewares/errorHandle');
 /** подключаем к бд */
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
+app.use((req, res, next) => {
+  req.user = {
+    _id: '64a5c56812ba4df16b7b5c00',
+  };
+  next();
+});
+
 app.use(express.json());
 app.use(helmet());
-
+// app.use('/', router);
 app.use(routes);
 app.use(errors());
 app.use(error);
