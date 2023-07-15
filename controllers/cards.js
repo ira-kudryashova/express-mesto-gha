@@ -3,10 +3,7 @@ const BadRequest = require('../errors/BadRequest');
 const Forbidden = require('../errors/Forbidden');
 const NotFound = require('../errors/NotFound');
 
-// const ERROR_BAD_REQUEST = 400;
-// const ERROR_NOT_FOUND = 404;
-// const ERROR_SERVER_ERROR = 500;
-
+/** получить все карточки */
 const getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => {
@@ -20,6 +17,7 @@ const getCards = (req, res, next) => {
     .catch(next);
 };
 
+/** создать карточку по id */
 const createCard = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user._id;
@@ -42,6 +40,7 @@ const createCard = (req, res, next) => {
     });
 };
 
+/** удалить карточку */
 const deleteCard = (req, res, next) => {
   const { cardId } = req.params;
   const { _id } = req.user;
@@ -60,6 +59,7 @@ const deleteCard = (req, res, next) => {
     .catch(next);
 };
 
+/** лайк карточки */
 const likeCard = (req, res, next) => {
   const cardId = req.params;
   Card.findByIdAndUpdate(
@@ -84,6 +84,7 @@ const likeCard = (req, res, next) => {
     });
 };
 
+/** дизлайк карточки */
 const dislikeCard = (req, res, next) => {
   const { cardId } = req.params;
   Card.findByIdAndUpdate(

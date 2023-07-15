@@ -8,7 +8,7 @@ const BadRequest = require('../errors/BadRequest');
 const Conflict = require('../errors/Conflict');
 const NotFound = require('../errors/NotFound');
 
-/** при GET-запросе на URL /users  */
+/** при GET-запросе на URL /users. Получить всех пользователей  */
 const getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send({ data: users }))
@@ -22,6 +22,7 @@ const getUserInfo = (req, res, next) => {
       if (!user) {
         next(new NotFound('Пользователь не найден'));
       } else {
+        /** получить объект пользователя */
         res.send({
           _id: user._id,
           name: user.name,
@@ -34,7 +35,7 @@ const getUserInfo = (req, res, next) => {
     .catch((err) => next(err));
 };
 
-/** GET-запрос /users/:id */
+/** GET-запрос /users/:id. Получить всех пользователей по id */
 const getUserById = (req, res, next) => {
   /** доступк параметрам */
   const { id } = req.params;
@@ -55,7 +56,7 @@ const getUserById = (req, res, next) => {
     });
 };
 
-/** POST-запрос /users  */
+/** POST-запрос /users. Создать нового пользователя  */
 const createUser = (req, res, next) => {
   const {
     name,
@@ -87,7 +88,7 @@ const createUser = (req, res, next) => {
     });
 };
 
-/** обновление данных пользователя */
+/** обновить данных пользователя */
 const updateUser = (req, res, next) => {
   // eslint-disable-next-line no-underscore-dangle
   const userId = req.user._id;
@@ -107,7 +108,7 @@ const updateUser = (req, res, next) => {
     });
 };
 
-/** PATCH-запрос /users/me/avatar */
+/** PATCH-запрос /users/me/avatar. Обновить аватар пользователя */
 const updateUserAvatar = (req, res, next) => {
   // eslint-disable-next-line no-underscore-dangle
   const userId = req.user._id;
