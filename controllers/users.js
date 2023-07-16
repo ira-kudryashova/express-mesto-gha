@@ -113,7 +113,6 @@ const login = (req, res, next) => {
     .then((isValidPassword) => {
       if (!isValidPassword) throw new Unauthorized('Ошибка авторизации');
       const token = jwt.sign({ _id: data._id }, 'secret-key', { expiresIn: '10d' });
-      console.log('Успех!');
       return res.status(200).send({ token });
     })
     .catch((err) => next(err));
