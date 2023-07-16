@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 const { Joi, celebrate } = require('celebrate');
 
-const urlRegex = /^http|https:\/\/(?:www\.)?[a-zA-Z0-9._~\-:?#[\]@!$&'()*+,.{2,256}.{a-zA-Z0-9./?#-}{2,}$]/;
+const urlRegex = /^(http|https):\/\/(?:www\.)?[a-zA-Z0-9._~\-:?#[\]@!$&'()*+,/;=]{2,256}\.[a-zA-Z0-9./?#-]{2,}$/;
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i;
 
 const authValidation = celebrate({

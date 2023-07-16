@@ -27,13 +27,11 @@ const createCard = (req, res, next) => {
     owner,
   })
     .then((card) => {
-      // eslint-disable-next-line max-len
-      /** При успешном создании карточки нужно возвращать 201 статус ответа, этот статус ответа означает, что сервер успешно обработал запрос и создал новый ресурс */
       res.status(201).send(card);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new BadRequest('Некоррестные данные создания карточки'));
+        next(new BadRequest('Невозможно создать новую карточку'));
       } else {
         next(err);
       }
@@ -43,20 +41,25 @@ const createCard = (req, res, next) => {
 /** удалить карточку */
 const deleteCard = (req, res, next) => {
   const { cardId } = req.params;
-  const { _id } = req.user;
+  // const { _id } = req.user;
   Card.findById(cardId)
     .then((card) => {
       if (!card) {
         throw new NotFound('Карточка не найдена');
       }
-      if (card.owner.valueOf() !== _id) {
-        throw new Forbidden('Айяйяй! Чужую карточку удалить нельзя');
+      if (req.user._id === card.owner.toString()) {
+        return card.deleteOne();
       }
-      Card.findByIdAndRemove(cardId)
-        .then((deletedCard) => res.status(200).send(deletedCard))
-        .catch(next);
+      throw new Forbidden('Нельзя удалять чужие карточки');
     })
-    .catch(next);
+    .then((removedCard) => res.send(removedCard))
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new BadRequest('Некорректные данные'));
+      } else {
+        next(err);
+      }
+    });
 };
 
 /** лайк карточки */

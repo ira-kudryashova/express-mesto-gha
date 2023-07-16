@@ -3,7 +3,6 @@ const errorHandler = (err, req, res, next) => {
   res.status(status).send({
     message: status === 500 ? 'Произошла ошибка на сервере' : message,
   });
-
   next();
 };
 
