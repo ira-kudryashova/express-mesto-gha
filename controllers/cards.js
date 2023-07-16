@@ -43,19 +43,21 @@ const deleteCard = (req, res, next) => {
   const { cardId } = req.params;
   // const { _id } = req.user;
   Card.findById(cardId)
-    .then((card) => {
-      if (!card) {
-        throw new NotFound('Карточка не найдена');
-      }
-      if (req.user._id === card.owner.toString()) {
-        return card.deleteOne();
-      }
-      throw new Forbidden('Нельзя удалять чужие карточки');
+    .orFail(() => {
+      throw new NotFound('Карточка не найдена');
     })
-    .then((removedCard) => res.send(removedCard))
+    .then((card) => {
+      if (card.owner.toString() === req.user._id) {
+        Card.deleteOne(card).then(() => res.send(card));
+      } else {
+        throw new Forbidden('Айяйяй! Нельзя удалять чужие карточки');
+      }
+    })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequest('Некорректные данные'));
+        next(new BadRequest('Переданы некорректные данные для удаления карточки'));
+      } else if (err.name === 'NotFoundError') {
+        next(new NotFound('Карточка не найдена'));
       } else {
         next(err);
       }
@@ -71,16 +73,16 @@ const likeCard = (req, res, next) => {
     { new: true, runValidators: true },
   )
     .orFail(() => {
-      throw new NotFound(`Карточка: ${cardId} не найдена`);
+      throw new NotFound('Карточка не найдена');
     })
     .then((card) => {
       res.status(201).send(card);
     })
     .catch((err) => {
       if (err.name === 'CastError' || err.name === 'ValidationError') {
-        next(new BadRequest(`Карточка: ${cardId} не найдена`));
+        next(new BadRequest('Карточка не найдена'));
       } else if (err.name === 'NotFound') {
-        next(new NotFound(`Карточка: ${cardId} не найдена`));
+        next(new NotFound('Карточка не найдена'));
       } else {
         next(err);
       }
@@ -96,14 +98,14 @@ const dislikeCard = (req, res, next) => {
     { new: true, runValidators: true },
   )
     .orFail(() => {
-      throw new NotFound(`Карточка: ${cardId} не найдена`);
+      throw new NotFound('Карточка не найдена');
     })
     .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequest(`Карточка: ${cardId} не найдена`));
+        next(new BadRequest('Карточка не найдена'));
       } else if (err.name === 'NotFound') {
-        next(new NotFound(`Карточка: ${cardId} не найдена`));
+        next(new NotFound('Карточка не найдена'));
       } else {
         next(err);
       }

@@ -110,8 +110,8 @@ const login = (req, res, next) => {
       data = user;
       return bcrypt.compare(password, data.password);
     })
-    .then((isValidPassword) => {
-      if (!isValidPassword) throw new Unauthorized('Ошибка авторизации');
+    .then((matched) => {
+      if (!matched) throw new Unauthorized('Ошибка авторизации');
       const token = jwt.sign({ _id: data._id }, 'secret-key', { expiresIn: '10d' });
       return res.status(200).send({ token });
     })
