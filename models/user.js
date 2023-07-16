@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema(
       required: [true, 'Поле "about" должно быть заполнено'],
       minlength: [2, 'Минимальная длина поля "about" - 2'],
       maxlength: [30, 'Максимальная длина поля "about" - 30'],
-      default: 'Исследователь',
+      default: 'Исследователь океана',
     },
     avatar: {
       type: String,
@@ -34,7 +34,7 @@ const userSchema = new mongoose.Schema(
       /** почта должна быть уникальной */
       unique: true,
       validate: {
-        validator: (value) => validator.isEmail(value),
+        validator: (email) => validator.isEmail(email),
         message: 'Некорректный формат электронной почты',
       },
     },
@@ -45,7 +45,7 @@ const userSchema = new mongoose.Schema(
       select: false,
     },
   },
-  { versionKey: false },
+  // { versionKey: false },
 );
 
 // const User = mongoose.model('user', userSchema);

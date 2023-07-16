@@ -1,8 +1,8 @@
 const router = require('express').Router();
 const usersRouter = require('./users');
 const cardsRouter = require('./cards');
-const { createUser, login } = require('../controllers/users');
 const auth = require('../middlewares/auth');
+const { createUser, login } = require('../controllers/users');
 const { validateAuth, validateReg } = require('../middlewares/validation');
 const NotFound = require('../errors/NotFound');
 
