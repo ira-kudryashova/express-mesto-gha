@@ -4,14 +4,14 @@ const { Joi, celebrate } = require('celebrate');
 const urlRegex = /^(http|https):\/\/(?:www\.)?[a-zA-Z0-9._~\-:?#[\]@!$&'()*+,/;=]{2,256}\.[a-zA-Z0-9./?#-]{2,}$/;
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i;
 
-const authValidation = celebrate({
+const validateAuth = celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email().pattern(emailRegex),
     password: Joi.string().required(),
   }),
 });
 
-const registerValidation = celebrate({
+const validateReg = celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
@@ -21,44 +21,44 @@ const registerValidation = celebrate({
   }),
 });
 
-const userValidation = celebrate({
+const validateUser = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
     about: Joi.string().required().min(2).max(30),
   }),
 });
 
-const userIdValidation = celebrate({
+const validateUserId = celebrate({
   params: Joi.object().keys({
     userId: Joi.string().hex().length(24),
   }),
 });
 
-const avatarValidation = celebrate({
+const validateAvatar = celebrate({
   body: Joi.object().keys({
     avatar: Joi.string().required().pattern(urlRegex),
   }),
 });
 
-const cardValidation = celebrate({
+const validateCard = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
     link: Joi.string().required().pattern(urlRegex),
   }),
 });
 
-const cardIdValidation = celebrate({
+const validateCardId = celebrate({
   params: Joi.object().keys({
     cardId: Joi.string().hex().length(24),
   }),
 });
 
 module.exports = {
-  authValidation,
-  registerValidation,
-  userValidation,
-  userIdValidation,
-  avatarValidation,
-  cardValidation,
-  cardIdValidation,
+  validateAuth,
+  validateReg,
+  validateUser,
+  validateUserId,
+  validateAvatar,
+  validateCard,
+  validateCardId,
 };
