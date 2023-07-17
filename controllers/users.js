@@ -18,16 +18,31 @@ const getUsers = (req, res, next) => {
 
 /** GET-запрос. Получить всех пользователей по id */
 const getUserById = (req, res, next) => {
-  User
-    .findById(req.params.userId ? req.params.userId : req.user._id)
-    .orFail(() => next(new NotFoundError('NotFound')))
-    .then((user) => res.send(user))
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        return next(new BadRequestError('Переданы некорректные данные'));
+  const userId = req.user._id;
+  User.findById(userId)
+    .then((user) => {
+      if (!user) {
+        next(new NotFoundError('Пользователь не найден'));
+      } else {
+        res.send({
+          _id: user._id,
+          name: user.name,
+          about: user.about,
+          avatar: user.avatar,
+          email: user.email,
+        });
       }
-      return next(err);
-    });
+    })
+    .catch((err) => next(err));
+  // User.findById(req.params.userId ? req.params.userId : req.user._id)
+  //   .orFail(() => next(new NotFoundError('NotFound')))
+  //   .then((user) => res.send(user))
+  //   .catch((err) => {
+  //     if (err.name === 'CastError') {
+  //       return next(new BadRequestError('Переданы некорректные данные'));
+  //     }
+  //     return next(err);
+  //   });
 };
 
 /** POST-запрос. Создать нового пользователя  */
