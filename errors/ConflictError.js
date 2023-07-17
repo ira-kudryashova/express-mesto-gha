@@ -1,10 +1,10 @@
-class Unauthorized extends Error {
+class ConflictError extends Error {
   constructor(message) {
     super();
     this.name = this.constructor.name;
     this.message = message;
-    this.status = 401;
+    this.status = 409;
   }
 }
 
-module.exports = Unauthorized;
+module.exports = ConflictError;

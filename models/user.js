@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const validator = require('validator');
+// eslint-disable-next-line import/no-extraneous-dependencies
+const bcrypt = require('bcrypt');
+const UnauthorizedError = require('../errors/UnauthorizedError');
 
 const userSchema = new mongoose.Schema(
   {
@@ -40,6 +43,24 @@ const userSchema = new mongoose.Schema(
     },
   },
 );
+
+userSchema.statics.findUserByCredentials = function passwordHash(email, password) {
+  return this.findOne({ email })
+    .select('+password')
+    .then((user) => {
+      if (!user) {
+        throw new UnauthorizedError('Ошибка авторизации');
+      }
+
+      return bcrypt.compare(password, user.password)
+        .then((matched) => {
+          if (!matched) {
+            throw new UnauthorizedError('Ошибка авторизации');
+          }
+          return user;
+        });
+    });
+};
 
 // const User = mongoose.model('user', userSchema);
 // module.exports = User;

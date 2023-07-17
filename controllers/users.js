@@ -4,10 +4,9 @@ const bcrypt = require('bcrypt'); /** для хеширования пароля
 const jwt = require('jsonwebtoken');
 
 const User = require('../models/user');
-const BadRequest = require('../errors/BadRequest');
-const Conflict = require('../errors/Conflict');
-const NotFound = require('../errors/NotFound');
-// const Unauthorized = require('../errors/Unauthorized');
+const BadRequestError = require('../errors/BadRequestError');
+const ConflictError = require('../errors/ConflictError');
+const NotFoundError = require('../errors/NotFoundError');
 
 /** GET-запрос. Получить всех пользователей  */
 const getUsers = (req, res, next) => {
@@ -21,11 +20,11 @@ const getUsers = (req, res, next) => {
 const getUserById = (req, res, next) => {
   User
     .findById(req.params.userId ? req.params.userId : req.user._id)
-    .orFail(() => next(new NotFound('NotFound')))
+    .orFail(() => next(new NotFoundError('NotFound')))
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'CastError') {
-        return next(new BadRequest('Переданы некорректные данные'));
+        return next(new BadRequestError('Переданы некорректные данные'));
       }
       return next(err);
     });
@@ -56,11 +55,11 @@ const createUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new BadRequest(
+        next(new BadRequestError(
           'Невозможно создать ползователя',
         ));
       } else if (err.code === 11000) {
-        next(new Conflict(
+        next(new ConflictError(
           'Пользователь с такими данными уже существует',
         ));
       } else {
@@ -73,19 +72,22 @@ const createUser = (req, res, next) => {
 const updateUser = (req, res, next) => {
   const userId = req.user._id;
   const { name, about } = req.body;
-  User
-    .findByIdAndUpdate(
-      userId,
-      { name, about },
-      { new: true, runValidators: true },
-    )
-    .then((user) => res.send(user))
+  User.findByIdAndUpdate(
+    userId,
+    { name, about },
+    { new: true, runValidators: true },
+  )
+    .orFail(() => next(new NotFoundError('NotFound')))
+    .then((user) => res.send({ user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new BadRequest('Невозможно обновить профиль'));
-      } else {
-        next(err);
+        return next(
+          new BadRequestError(
+            'Переданы некорректные данные',
+          ),
+        );
       }
+      return next(err);
     });
 };
 
@@ -93,19 +95,24 @@ const updateUser = (req, res, next) => {
 const updateUserAvatar = (req, res, next) => {
   const userId = req.user._id;
   const { avatar } = req.body;
-  User
-    .findByIdAndUpdate(
-      userId,
-      { avatar },
-      { new: true, runValidators: true },
-    )
-    .then((user) => res.send(user))
+  User.findByIdAndUpdate(
+    userId,
+    { avatar },
+    { new: true, runValidators: true },
+  )
+    .orFail(() => {
+      throw new NotFoundError('Пользователь не найден');
+    })
+    .then((user) => res.send({ user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new BadRequest('Невозможно обновить аватар'));
-      } else {
-        next(err);
+        return next(
+          new BadRequestError(
+            'Невозможно обновить аватар',
+          ),
+        );
       }
+      return next(err);
     });
 };
 

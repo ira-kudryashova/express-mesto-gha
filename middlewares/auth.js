@@ -1,25 +1,25 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 const jwt = require('jsonwebtoken');
-// eslint-disable-next-line import/extensions
-const Unauthorized = require('../errors/Unauthorized.js');
+// eslint-disable-next-line import/no-unresolved
+const { UnauthorizedError } = require('../errors/UnauthorizedError');
 
-const auth = (req, res, next) => {
-  const { authorized } = req.headers;
-  if (!authorized || !authorized.startsWith('Bearer ')) {
-    next(new Unauthorized('Ошибка авторизации'));
+const extractBearerToken = (header) => header.replace('Bearer ', '');
+
+module.exports = (req, res, next) => {
+  const { authorization } = req.headers;
+  if (!authorization || !authorization.startsWith('Bearer ')) {
+    next(new UnauthorizedError('Необходима авторизация'));
+    return;
   }
-  /**  извлечение токена и его верификация */
-  const token = authorized.replace('Bearer ', '');
-  let payload;
 
+  const token = extractBearerToken(authorization);
+  let payload;
   try {
     payload = jwt.verify(token, 'secret-key');
   } catch (err) {
-    next(new Unauthorized('Ошибка авторизации'));
+    next(new UnauthorizedError('Необходима авторизация'));
+    return;
   }
-  /** запись payload в запрос и пропустить запрос далее */
   req.user = payload;
   next();
 };
-
-module.exports = auth;
