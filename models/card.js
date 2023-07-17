@@ -15,7 +15,7 @@ const cardSchema = new mongoose.Schema(
       required: [true, 'Поле "link" должно быть заполнено'],
       validate: {
         validator: (url) => validator.isURL(url),
-        message: 'Ссылка некорректна',
+        message: 'Неверный формат ссылки',
       },
     },
     owner: {
@@ -25,10 +25,8 @@ const cardSchema = new mongoose.Schema(
     },
     likes: [
       {
-        /** список тех? кто лайкнул карточку */
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user',
-        /** по дефолту пустой массив */
         default: [],
       },
     ],
