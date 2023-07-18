@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const validator = require('validator');
-const user = require('./user');
 
 const cardSchema = new mongoose.Schema(
   {
@@ -13,28 +12,31 @@ const cardSchema = new mongoose.Schema(
     },
     link: {
       type: String,
-      required: true,
+      required: [true, 'Поле "link" должно быть заполнено'],
       validate: {
         validator: (url) => validator.isURL(url),
-        message: 'Некорректная ссылка',
+        message: 'Неверный формат ссылки',
       },
     },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: user,
-      required: true,
+      ref: 'user',
+      required: [true, 'Поле "owner" должно быть заполнено'],
     },
-    likes: [{
-      type: mongoose.Schema.Types.ObjectId,
-      default: [],
-      ref: user,
-    }],
+    likes: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'user',
+        default: [],
+      },
+    ],
     createdAt: {
       type: Date,
-      default: new Date(Date.now()),
+      default: Date.now,
     },
   },
-  { versionKey: false },
 );
 
+// const Card = mongoose.model('card', cardSchema);
+// module.exports = Card;
 module.exports = mongoose.model('card', cardSchema);
