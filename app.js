@@ -11,7 +11,7 @@ const { PORT = 3000 } = process.env;
 
 const app = express();
 const routes = require('./routes/index');
-const error = require('./middlewares/errorHandle');
+const error = require('./middlewares/error');
 
 /** подключаем к бд */
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
