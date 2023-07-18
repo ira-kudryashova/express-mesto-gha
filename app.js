@@ -6,12 +6,12 @@ const mongoose = require('mongoose');
 const helmet = require('helmet');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const { errors } = require('celebrate');
-
-const { PORT = 3000 } = process.env;
+const error = require('./middlewares/error');
 
 const app = express();
 const routes = require('./routes/index');
-const error = require('./middlewares/error');
+
+const { PORT = 3000 } = process.env;
 
 /** подключаем к бд */
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
