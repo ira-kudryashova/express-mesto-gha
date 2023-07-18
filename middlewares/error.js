@@ -1,7 +1,7 @@
 const error = (err, req, res, next) => {
-  const { statusCode = 500, message } = err;
-  res.status(err.statusCode).send({
-    message: statusCode === 500 ? 'Произошла ошибка на сервере' : message,
+  const { status = 500, message } = err;
+  res.status(status).send({
+    message: status === 500 ? 'Произошла ошибка на сервере' : message,
   });
   next();
 };
