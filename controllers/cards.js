@@ -1,19 +1,17 @@
 const Card = require('../models/card');
 
-// Импорт ошибок
 const ForbiddenError = require('../errors/ForbiddenError');
 const NotFoundError = require('../errors/NotFoundError');
 const BadRequestError = require('../errors/BadRequestError');
 
-// ВЫВОД КАРТОЧЕК ИЗ МАССИВА
+/** получение карточек */
 function getCards(_, res, next) {
   Card.find({})
     .populate(['owner', 'likes'])
     .then((cards) => res.send({ data: cards }))
     .catch(next);
 }
-
-// СОЗДАНИЕ НОВОЙ КАРТОЧКИ
+/** создание новой карточки */
 function createCard(req, res, next) {
   const { name, link } = req.body;
   const { userId } = req.user;
@@ -33,7 +31,7 @@ function createCard(req, res, next) {
     });
 }
 
-// УДАЛЕНИЕ КАРТОЧКИ
+/** удаление карточки */
 function deleteCard(req, res, next) {
   const { id: cardId } = req.params;
   const { userId } = req.user;
@@ -63,8 +61,7 @@ function deleteCard(req, res, next) {
     })
     .catch(next);
 }
-
-// ЛАЙК КАРТОЧКИ
+/** лайк карточки */
 function likeCard(req, res, next) {
   const { cardId } = req.params;
   const { userId } = req.user;
@@ -98,7 +95,7 @@ function likeCard(req, res, next) {
     });
 }
 
-// СНЯТИЕ ЛАЙКА С КАРТОЧКИ
+/** дизлайк карточки */
 function dislikeCard(req, res, next) {
   const { cardId } = req.params;
   const { userId } = req.user;

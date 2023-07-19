@@ -1,13 +1,13 @@
 const router = require('express').Router();
 
-// ПОДКЛЮЧЕНИЕ ПАКЕТА celebrate и Joi для обработки валидации данных
 const { celebrate, Joi } = require('celebrate');
 
 const { URL_REGEX } = require('../utils/constants');
 
-// пакет, предназначенный для обработки валидации данных в
-// Express.js. Он предоставляет удобный способ определения
-// и применения правил валидации для запросов в вашем приложении Express.
+/** пакет, предназначенный для обработки валидации данных в
+ * Express.js. Он предоставляет удобный способ определения
+ * применения правил валидации для запросов в вашем приложении Express
+ * подключение celebrate и Joi для обработки валидации данных */
 const { createUser } = require('../controllers/users');
 
 router.post(

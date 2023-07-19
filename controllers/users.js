@@ -11,6 +11,52 @@ const UnauthorizedError = require('../errors/UnauthorizedError');
 const NotFoundError = require('../errors/NotFoundError');
 const ConflictError = require('../errors/ConflictError');
 
+/** GET-запрос. Получить всех пользователей  */
+function getUsers(_, res, next) {
+  User.find({})
+    .then((users) => res.send({ users }))
+    .catch(next);
+}
+
+/** GET-запрос. Получить всех пользователей по id */
+function getUserById(req, res, next) {
+  const { id } = req.params;
+
+  User.findById(id)
+
+    .then((user) => {
+      if (user) return res.send({ user });
+
+      throw new NotFoundError('Пользователь с таким id не найден');
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new BadRequestError('Передан некорректный id'));
+      } else {
+        next(err);
+      }
+    });
+}
+
+/** GET-запрос. Получить пользователя по адресу /me */
+function getCurrentUserInfo(req, res, next) {
+  const { userId } = req.user;
+
+  User.findById(userId)
+    .then((user) => {
+      if (user) return res.send({ user });
+
+      throw new NotFoundError('Пользователь с таким id не найден');
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new BadRequestError('Передан некорректный id'));
+      } else {
+        next(err);
+      }
+    });
+}
+
 /** POST-запрос. Зарегистрировать нового пользователя */
 function createUser(req, res, next) {
   const {
@@ -71,52 +117,6 @@ function login(req, res, next) {
       throw new UnauthorizedError('Неправильные почта или пароль');
     })
     .catch(next);
-}
-
-/** GET-запрос. Получить всех пользователей  */
-function getUsers(_, res, next) {
-  User.find({})
-    .then((users) => res.send({ users }))
-    .catch(next);
-}
-
-/** GET-запрос. Получить всех пользователей по id */
-function getUserById(req, res, next) {
-  const { id } = req.params;
-
-  User.findById(id)
-
-    .then((user) => {
-      if (user) return res.send({ user });
-
-      throw new NotFoundError('Пользователь с таким id не найден');
-    })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new BadRequestError('Передан некорректный id'));
-      } else {
-        next(err);
-      }
-    });
-}
-
-/** GET-запрос. Получить пользователя по адресу /me */
-function getCurrentUserInfo(req, res, next) {
-  const { userId } = req.user;
-
-  User.findById(userId)
-    .then((user) => {
-      if (user) return res.send({ user });
-
-      throw new NotFoundError('Пользователь с таким id не найден');
-    })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new BadRequestError('Передан некорректный id'));
-      } else {
-        next(err);
-      }
-    });
 }
 
 /** обновить данные пользователя */
