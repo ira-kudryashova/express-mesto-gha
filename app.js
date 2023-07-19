@@ -1,13 +1,13 @@
 const express = require('express');
 const mongoose = require('mongoose');
-// eslint-disable-next-line import/no-extraneous-dependencies
 const helmet = require('helmet');
-// eslint-disable-next-line import/no-extraneous-dependencies
 const bodyParser = require('body-parser');
-// eslint-disable-next-line import/no-extraneous-dependencies
 const { errors } = require('celebrate');
 
 const limiter = require('./middlewares/rateLimiter');
+
+const routeSignup = require('./routes/signup');
+const routeSignin = require('./routes/signin');
 
 const auth = require('./middlewares/auth');
 
@@ -40,6 +40,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(limiter);
+
+app.use('/', routeSignup);
+app.use('/', routeSignin);
 
 app.use(auth);
 

@@ -4,10 +4,7 @@ const { Schema } = mongoose;
 
 const { ObjectId } = mongoose.Schema.Types;
 
-// const validator = require('validator');
-
-/** регулярное выражение для проверки адресов и почты */
-const URL_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/;
+const { URL_REGEX } = require('../utils/constants');
 
 const cardSchema = new Schema(
   {

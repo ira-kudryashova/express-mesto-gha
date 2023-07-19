@@ -1,14 +1,9 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
 const { Schema } = mongoose;
-// eslint-disable-next-line import/no-extraneous-dependencies
-// const validator = require('validator');
-// eslint-disable-next-line import/no-extraneous-dependencies
-const bcrypt = require('bcrypt');
-// const UnauthorizedError = require('../errors/UnauthorizedError');
 
-/** регулярное выражение для проверки адресов и почты */
-const URL_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/;
+const { URL_REGEX } = require('../utils/constants');
 
 const userSchema = new Schema(
   {
