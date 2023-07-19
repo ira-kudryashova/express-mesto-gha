@@ -1,42 +1,54 @@
 const mongoose = require('mongoose');
-// eslint-disable-next-line import/no-extraneous-dependencies
-const validator = require('validator');
 
-const cardSchema = new mongoose.Schema(
+const { Schema } = mongoose;
+
+const { ObjectId } = mongoose.Schema.Types;
+
+// const validator = require('validator');
+
+/** регулярное выражение для проверки адресов и почты */
+const URL_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/;
+
+const cardSchema = new Schema(
   {
     name: {
       type: String,
-      required: [true, 'Поле "name" должно быть заполнено'],
-      minlength: [2, 'Минимальная длина поля "name" - 2'],
-      maxlength: [30, 'Максимальная длина поля "name" - 30'],
+      required: true,
+      validate: {
+        validator: ({ length }) => length >= 2 && length <= 30,
+        message: 'Имя карточки должно быть длиной от 2 до 30 символов',
+      },
     },
+
     link: {
       type: String,
-      required: [true, 'Поле "link" должно быть заполнено'],
+      required: true,
       validate: {
-        validator: (url) => validator.isURL(url),
-        message: 'Неверный формат ссылки',
+        validator: (url) => URL_REGEX.test(url),
+        message: 'Требуется ввести URL',
       },
     },
+
     owner: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: ObjectId,
       ref: 'user',
-      required: [true, 'Поле "owner" должно быть заполнено'],
+      required: true,
     },
-    likes: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'user',
-        default: [],
-      },
-    ],
+
+    likes: [{
+      type: ObjectId,
+      ref: 'user',
+      default: [],
+    }],
+
     createdAt: {
       type: Date,
       default: Date.now,
     },
   },
+  {
+    versionKey: false,
+  },
 );
 
-// const Card = mongoose.model('card', cardSchema);
-// module.exports = Card;
 module.exports = mongoose.model('card', cardSchema);
